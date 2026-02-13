@@ -1,5 +1,3 @@
-const resultadosDiv = document.getElementById("resultados");
-
 function formatFecha(fechaStr) {
     try {
         const d = new Date(fechaStr);
@@ -7,77 +5,110 @@ function formatFecha(fechaStr) {
     } catch (e) { return fechaStr; }
 }
 
-fetch("data/resultados.json")
-    .then(response => response.json())
-    .then(data => {
-        if (!data.resultados || !data.resultados.length) {
-            resultadosDiv.innerHTML = '<p>No hay resultados disponibles.</p>';
-            return;
+async function loadResultados() {
+    const resultadosDiv = document.getElementById("resultados");
+    if (!resultadosDiv) return;
+
+    // Determinar base absoluto para construir la URL del JSON
+    const baseHref = document.querySelector('base')?.getAttribute('href') || './';
+    const baseAbsolute = new URL(baseHref, window.location.href).href;
+
+    const pathsToTry = [
+        'data/resultados.json',
+        new URL('data/resultados.json', baseAbsolute).href
+    ];
+
+    let data = null;
+    let lastError = null;
+
+    for (const p of pathsToTry) {
+        try {
+            const resp = await fetch(p);
+            if (!resp.ok) throw new Error(`HTTP ${resp.status} for ${p}`);
+            data = await resp.json();
+            break;
+        } catch (err) {
+            lastError = err;
+            console.warn('Intento de carga fallido:', p, err);
         }
+    }
 
-        // Limpiar contenedor
-        resultadosDiv.innerHTML = '';
+    if (!data) {
+        resultadosDiv.innerHTML = '<p>No se pudieron cargar los resultados.</p>';
+        console.error('No se pudo cargar data/resultados.json:', lastError);
+        return;
+    }
 
-        data.resultados.forEach(partido => {
-            const tarjeta = document.createElement('article');
-            tarjeta.className = 'tarjeta';
-            tarjeta.tabIndex = 0;
+    if (!data.resultados || !data.resultados.length) {
+        resultadosDiv.innerHTML = '<p>No hay resultados disponibles.</p>';
+        return;
+    }
 
-            const equipos = document.createElement('div');
-            equipos.className = 'equipos';
+    resultadosDiv.innerHTML = '';
 
-            const equipoLocal = document.createElement('div');
-            equipoLocal.className = 'equipo';
-            const logoL = document.createElement('img');
-            logoL.className = 'logo-img';
-            logoL.src = partido.escudoLocal || 'images/placeholder.png';
-            logoL.alt = partido.local;
-            logoL.onerror = function() { this.style.display = 'none'; };
-            const nombreL = document.createElement('small');
-            nombreL.textContent = partido.local;
-            equipoLocal.appendChild(logoL);
-            equipoLocal.appendChild(nombreL);
+    data.resultados.forEach(partido => {
+        const tarjeta = document.createElement('article');
+        tarjeta.className = 'tarjeta';
+        tarjeta.tabIndex = 0;
 
-            const marcador = document.createElement('div');
-            marcador.className = 'marcador';
-            const parts = (partido.marcador || '').split('-').map(s=>s.trim());
-            marcador.innerHTML = `${parts[0] || ''} <span class="sep">-</span> ${parts[1] || ''}`;
+        const equipos = document.createElement('div');
+        equipos.className = 'equipos';
 
-            const equipoVis = document.createElement('div');
-            equipoVis.className = 'equipo';
-            const logoV = document.createElement('img');
-            logoV.className = 'logo-img';
-            logoV.src = partido.escudoVisitante || 'images/placeholder.png';
-            logoV.alt = partido.visitante;
-            logoV.onerror = function() { this.style.display = 'none'; };
-            const nombreV = document.createElement('small');
-            nombreV.textContent = partido.visitante;
-            equipoVis.appendChild(logoV);
-            equipoVis.appendChild(nombreV);
+        const equipoLocal = document.createElement('div');
+        equipoLocal.className = 'equipo';
+        const logoL = document.createElement('img');
+        logoL.className = 'logo-img';
+        logoL.src = partido.escudoLocal || 'images/placeholder.png';
+        logoL.alt = partido.local;
+        logoL.onerror = function() { this.style.display = 'none'; };
+        const nombreL = document.createElement('small');
+        nombreL.textContent = partido.local;
+        equipoLocal.appendChild(logoL);
+        equipoLocal.appendChild(nombreL);
 
-            equipos.appendChild(equipoLocal);
-            equipos.appendChild(marcador);
-            equipos.appendChild(equipoVis);
+        const marcador = document.createElement('div');
+        marcador.className = 'marcador';
+        const parts = (partido.marcador || '').split('-').map(s=>s.trim());
+        marcador.innerHTML = `${parts[0] || ''} <span class="sep">-</span> ${parts[1] || ''}`;
 
-            const meta = document.createElement('div');
-            meta.className = 'meta';
-            const fecha = document.createElement('div');
-            fecha.className = 'fecha';
-            fecha.textContent = formatFecha(partido.fecha);
-            const estado = document.createElement('div');
-            estado.className = 'estado';
-            estado.textContent = 'Final';
+        const equipoVis = document.createElement('div');
+        equipoVis.className = 'equipo';
+        const logoV = document.createElement('img');
+        logoV.className = 'logo-img';
+        logoV.src = partido.escudoVisitante || 'images/placeholder.png';
+        logoV.alt = partido.visitante;
+        logoV.onerror = function() { this.style.display = 'none'; };
+        const nombreV = document.createElement('small');
+        nombreV.textContent = partido.visitante;
+        equipoVis.appendChild(logoV);
+        equipoVis.appendChild(nombreV);
 
-            meta.appendChild(fecha);
-            meta.appendChild(estado);
+        equipos.appendChild(equipoLocal);
+        equipos.appendChild(marcador);
+        equipos.appendChild(equipoVis);
 
-            tarjeta.appendChild(equipos);
-            tarjeta.appendChild(meta);
+        const meta = document.createElement('div');
+        meta.className = 'meta';
+        const fecha = document.createElement('div');
+        fecha.className = 'fecha';
+        fecha.textContent = formatFecha(partido.fecha);
+        const estado = document.createElement('div');
+        estado.className = 'estado';
+        estado.textContent = 'Final';
 
-            resultadosDiv.appendChild(tarjeta);
-        });
-    })
-    .catch(error => {
-        resultadosDiv.innerHTML = "No se pudieron cargar los resultados";
-        console.error(error);
+        meta.appendChild(fecha);
+        meta.appendChild(estado);
+
+        tarjeta.appendChild(equipos);
+        tarjeta.appendChild(meta);
+
+        resultadosDiv.appendChild(tarjeta);
     });
+}
+
+// Ejecutar después de que el DOM esté listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadResultados);
+} else {
+    loadResultados();
+}
