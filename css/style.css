@@ -1,0 +1,87 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: linear-gradient(135deg, #0b3c5d, #328cc1);
+    min-height: 100vh;
+    color: white;
+}
+
+header {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+header h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+header p {
+    font-weight: 300;
+    opacity: 0.8;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
+.contenedor {
+    width: 100%;
+    max-width: 700px;
+}
+
+.tarjeta {
+    background: white;
+    color: #333;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease;
+}
+
+.tarjeta:hover {
+    transform: scale(1.03);
+}
+
+.equipos {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.equipo {
+    text-align: center;
+    width: 40%;
+}
+
+.equipo img {
+    width: 60px;
+    margin-bottom: 5px;
+}
+
+.marcador {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.fecha {
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 0.8rem;
+    opacity: 0.7;
+}

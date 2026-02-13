@@ -1,0 +1,38 @@
+{
+  "liga": "Liga BetPlay Dimayor",
+  "temporada": "2025",
+  "resultados": [
+    {
+      "local": "Atlético Nacional",
+      "escudoLocal": "images/atletico-nacional.png",
+      "visitante": "Millonarios",
+      "escudoVisitante": "images/millonarios.png",
+      "marcador": "2 - 1",
+      "fecha": "2025-02-02"
+    },
+    {
+      "local": "América de Cali",
+      "escudoLocal": "images/america-cali.png",
+      "visitante": "Junior",
+      "escudoVisitante": "images/junior.png",
+      "marcador": "1 - 1",
+      "fecha": "2025-02-01"
+    },
+    {
+      "local": "Santa Fe",
+      "escudoLocal": "images/santa-fe.png",
+      "visitante": "Deportes Tolima",
+      "escudoVisitante": "images/deportes-tolima.png",
+      "marcador": "0 - 2",
+      "fecha": "2025-01-31"
+    },
+    {
+      "local": "Once Caldas",
+      "escudoLocal": "images/once-caldas.png",
+      "visitante": "Deportivo Cali",
+      "escudoVisitante": "images/deportivo-cali.png",
+      "marcador": "3 - 0",
+      "fecha": "2025-01-30"
+    }
+  ]
+}
